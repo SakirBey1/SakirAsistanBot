@@ -1,4 +1,3 @@
-# -*- coding: UTF8 -*-
 import requests
 import datetime
 
@@ -65,30 +64,26 @@ def main():
                 else:
                     first_chat_name = "unknown"
 
-                if first_chat_text == 'Merhaba':
-                    magnito_bot.send_message(first_chat_id, 'Merhabalar ' + first_chat_name)
+                if first_chat_text == 'Asistan':
+                    magnito_bot.send_message(first_chat_id, 'Efendim? ' + first_chat_name)
                     new_offset = first_update_id + 1
-                
+                   
+                if first_chat_text == 'Selam':
+                    magnito_bot.send_message(first_chat_id, 'Aleyküm Selam Hoş Geldin ' + first_chat_name)
+                    new_offset = first_update_id + 1
+                    
                 if first_chat_text == 'Sa':
                     magnito_bot.send_message(first_chat_id, 'AleykümSelam ' + first_chat_name)
                     new_offset = first_update_id + 1
-                
-                if first_chat_text == 'Selam':
-                    magnito_bot.send_message(first_chat_id, 'Selam Naber? ' + first_chat_name)
-                    new_offset = first_update_id + 1
-                
+                    
                 if first_chat_text == 'Sahib':
                     magnito_bot.send_message(first_chat_id, 'Sahibim @Sakirhackofficial99 ' + first_chat_name)
                     new_offset = first_update_id + 1
-                
-                if first_chat_text == 'Naber':
-                    magnito_bot.send_message(first_chat_id, 'Bakımım yeni yapıldı iyilik sizden? ' + first_chat_name)
-                    new_offset = first_update_id + 1
-                    else:
+                else:
                     magnito_bot.send_message(first_chat_id, 'How are you doing '+first_chat_name)
                     new_offset = first_update_id + 1
-                    
-                    
+
+
 if __name__ == '__main__':
     try:
         main()
