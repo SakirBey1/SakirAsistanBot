@@ -9,7 +9,7 @@ class BotHandler:
             self.token = token
             self.api_url = "https://api.telegram.org/bot{}/".format(token)
 
-    #url = "https://api.telegram.org/bot<token>/"
+    #url = "https://api.telegram.org/bot<1815503953:AAF9rHhMOGzup5JzwnBsvqot6KOzIrK9qwI>/"
 
     def get_updates(self, offset=0, timeout=30):
         method = 'getUpdates'
@@ -36,7 +36,7 @@ class BotHandler:
 
 
 token = 'YourToken' #Token of your bot
-magnito_bot = BotHandler(token) #Your bot's name
+magnito_bot = BotHandler('1815503953:AAF9rHhMOGzup5JzwnBsvqot6KOzIrK9qwI') #Your bot's name
 
 
 
@@ -65,14 +65,30 @@ def main():
                 else:
                     first_chat_name = "unknown"
 
-                if first_chat_text == 'Hi':
-                    magnito_bot.send_message(first_chat_id, 'Morning ' + first_chat_name)
+                if first_chat_text == 'Merhaba':
+                    magnito_bot.send_message(first_chat_id, 'Merhabalar ' + first_chat_name)
                     new_offset = first_update_id + 1
-                else:
+                
+                if first_chat_text == 'Sa':
+                    magnito_bot.send_message(first_chat_id, 'AleykümSelam ' + first_chat_name)
+                    new_offset = first_update_id + 1
+                
+                if first_chat_text == 'Selam':
+                    magnito_bot.send_message(first_chat_id, 'Selam Naber? ' + first_chat_name)
+                    new_offset = first_update_id + 1
+                
+                if first_chat_text == 'Sahib':
+                    magnito_bot.send_message(first_chat_id, 'Sahibim @Sakirhackofficial99 ' + first_chat_name)
+                    new_offset = first_update_id + 1
+                
+                if first_chat_text == 'Naber':
+                    magnito_bot.send_message(first_chat_id, 'Bakımım yeni yapıldı iyilik sizden? ' + first_chat_name)
+                    new_offset = first_update_id + 1
+                    else:
                     magnito_bot.send_message(first_chat_id, 'How are you doing '+first_chat_name)
                     new_offset = first_update_id + 1
-
-
+                    
+                    
 if __name__ == '__main__':
     try:
         main()
