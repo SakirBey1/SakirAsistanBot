@@ -1,91 +1,67 @@
-import requests
-import datetime
+import logging
+
+import telegram
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
+# Enable logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 
-
-class BotHandler:
-    def __init__(self, token):
-            self.token = token
-            self.api_url = "https://api.telegram.org/bot{}/".format(token)
-
-    #url = "https://api.telegram.org/bot<1815503953:AAF9rHhMOGzup5JzwnBsvqot6KOzIrK9qwI>/"
-
-    def get_updates(self, offset=0, timeout=30):
-        method = 'getUpdates'
-        params = {'timeout': timeout, 'offset': offset}
-        resp = requests.get(self.api_url + method, params)
-        result_json = resp.json()['result']
-        return result_json
-
-    def send_message(self, chat_id, text):
-        params = {'chat_id': chat_id, 'text': text, 'parse_mode': 'HTML'}
-        method = 'sendMessage'
-        resp = requests.post(self.api_url + method, params)
-        return resp
-
-    def get_first_update(self):
-        get_result = self.get_updates()
-
-        if len(get_result) > 0:
-            last_update = get_result[0]
-        else:
-            last_update = None
-
-        return last_update
+# Define a few command handlers. These usually take the two arguments update and
+# context. Error handlers also receive the raised TelegramError object in error.
+def start(update, context):
+    """Send a message when the command /start is issued."""
+    update.message.reply_text('Başladık hadi hayırlısı')
 
 
-token = 'YourToken' #Token of your bot
-magnito_bot = BotHandler('1815503953:AAF9rHhMOGzup5JzwnBsvqot6KOzIrK9qwI') #Your bot's name
+def help(update, context):
+    """Send a message when the command /help is issued."""
+    update.message.reply_text('Yardım geliyor')
 
+
+def echo(update, context):
+    """Echo the user message."""
+    update.message.reply_text(update.message.text)
+
+
+def error(update, context):
+    """Log Errors caused by Updates."""
+    logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 
 def main():
-    new_offset = 0
-    print('hi, now launching...')
+    """Start the bot."""
+    # Create the Updater and pass it your bot's token.
+    # Make sure to set use_context=True to use the new context based callbacks
+    # Post version 12 this will no longer be necessary
+    token = "1815503953:AAF9rHhMOGzup5JzwnBsvqot6KOzIrK9qwI"
+    updater = Updater(token, use_context=True)
 
-    while True:
-        all_updates=magnito_bot.get_updates(new_offset)
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
 
-        if len(all_updates) > 0:
-            for current_update in all_updates:
-                print(current_update)
-                first_update_id = current_update['update_id']
-                if 'text' not in current_update['message']:
-                    first_chat_text='New member'
-                else:
-                    first_chat_text = current_update['message']['text']
-                first_chat_id = current_update['message']['chat']['id']
-                if 'first_name' in current_update['message']:
-                    first_chat_name = current_update['message']['chat']['first_name']
-                elif 'new_chat_member' in current_update['message']:
-                    first_chat_name = current_update['message']['new_chat_member']['username']
-                elif 'from' in current_update['message']:
-                    first_chat_name = current_update['message']['from']['first_name']
-                else:
-                    first_chat_name = "unknown"
+    # on different commands - answer in Telegram
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("help", help))
 
-                if first_chat_text == 'Asistan':
-                    magnito_bot.send_message(first_chat_id, 'Efendim? ' + first_chat_name)
-                    new_offset = first_update_id + 1
-                   
-                if first_chat_text == 'Selam':
-                    magnito_bot.send_message(first_chat_id, 'Aleyküm Selam Hoş Geldin ' + first_chat_name)
-                    new_offset = first_update_id + 1
-                    
-                if first_chat_text == 'Sa':
-                    magnito_bot.send_message(first_chat_id, 'AleykümSelam ' + first_chat_name)
-                    new_offset = first_update_id + 1
-                    
-                if first_chat_text == 'Sahib':
-                    magnito_bot.send_message(first_chat_id, 'Sahibim @Sakirhackofficial99 ' + first_chat_name)
-                    new_offset = first_update_id + 1
-                else:
-                    magnito_bot.send_message(first_chat_id, 'How are you doing '+first_chat_name)
-                    new_offset = first_update_id + 1
+    # on noncommand i.e message - echo the message on Telegram
+    dp.add_handler(MessageHandler(Filters.text, echo))
+
+    # log all errors
+    dp.add_error_handler(error)
+
+    # Start the Bot
+    updater.start_polling()
+
+
+    # Run the bot until you press Ctrl-C or the process receives SIGINT,
+    # SIGTERM or SIGABRT. This should be used most of the time, since
+    # start_polling() is non-blocking and will stop the bot gracefully.
+    updater.idle()
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except KeyboardInterrupt:
-        exit()
+    main()
